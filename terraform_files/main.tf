@@ -1,6 +1,7 @@
 # SERVER1: 'MASTER-SERVER' (with Jenkins, Maven, Docker, Ansible, Trivy)
 # STEP1: CREATING A SECURITY GROUP FOR JENKINS SERVER
 # Description: Allow SSH, HTTP, HTTPS, 8080, 8081
+#block "service name" "local name"
 resource "aws_security_group" "my_security_group1" {
   name        = "my-security-group1"
   description = "Allow SSH, HTTP, HTTPS, 8080 for Jenkins & Maven"
@@ -57,8 +58,8 @@ resource "aws_instance" "my_ec2_instance1" {
   ami                    = "ami-0cf10cdf9fcd62d37"
   instance_type          = "t2.medium"
   vpc_security_group_ids = [aws_security_group.my_security_group1.id]
-  key_name               = "My_Key" # paste your key-name here, do not use extension '.pem'
-
+  #key_name               = "My_Key" # paste your key-name here, do not use extension '.pem'
+  key_name               = "aws_jk_ec2" 
   # Consider EBS volume 30GB
   root_block_device {
     volume_size = 30    # Volume size 30 GB
@@ -84,7 +85,7 @@ resource "aws_instance" "my_ec2_instance1" {
     # ESTABLISHING SSH CONNECTION WITH EC2
     connection {
       type        = "ssh"
-      private_key = file("./My_Key.pem") # replace with your key-name 
+      private_key = file("./aws_jk_ec2.pem") # replace with your key-name 
       user        = "ec2-user"
       host        = self.public_ip
     }
